@@ -1,4 +1,4 @@
-<div align="center">
+[⚠️ Suspicious Content] <div align="center">
 
 # Background Remover 🖼️✨
 [Live Demo](https://drbaph.is-a.dev/RemoveBG/)
@@ -38,7 +38,7 @@ A modern, responsive web application that instantly removes backgrounds from ima
 - **Touch Optimized** - Full touch gesture support for mobile devices
 - **Progress Tracking** - Visual feedback during image processing
 - **Modern UI** - Glassmorphism effects, smooth animations, and gradient accents
-- **Web Worker Offloading** - Heavy background removal is performed in a Web Worker for smooth UI and better performance. If the worker is unsupported or fails, the app automatically falls back to single-threaded (main thread) processing for maximum compatibility.
+- **Client-Side Processing** - Background removal is performed directly in the browser using @imgly/background-removal. Performance may vary depending on device and browser capabilities.
 
 ## 🚀 Technologies Used
 
