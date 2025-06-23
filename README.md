@@ -38,6 +38,7 @@ A modern, responsive web application that instantly removes backgrounds from ima
 - **Touch Optimized** - Full touch gesture support for mobile devices
 - **Progress Tracking** - Visual feedback during image processing
 - **Modern UI** - Glassmorphism effects, smooth animations, and gradient accents
+- **Adaptive AI Model** - The app automatically uses a smaller AI model on mobile/tablet for better compatibility and performance, and the full model on desktop for best quality.
 - **Client-Side Processing** - Background removal is performed directly in the browser using @imgly/background-removal. Performance may vary depending on device and browser capabilities.
 
 ## 🚀 Technologies Used
