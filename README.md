@@ -100,7 +100,7 @@ Visit the live application at: [https://drbaph.is-a.dev/RemoveBG](https://drbaph
 
 ## 🙏 Acknowledgements
 
-- Background removal powered by [@imgly/background-removal-js](https://github.com/imgly/background-removal-js)
+- [Github.com/imgly/background-removal-js](https://github.com/imgly/background-removal-js)
 
 ---
 
