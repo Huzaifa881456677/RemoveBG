@@ -1,4 +1,4 @@
-[⚠️ Suspicious Content] <div align="center">
+<div align="center">
 
 # Background Remover 🖼️✨
 [Live Demo](https://drbaph.is-a.dev/RemoveBG/)
