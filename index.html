@@ -395,22 +395,17 @@
   </footer>
 
   <script type="module">
-    // Web Worker setup
-    let workerSupported = false;
-    let worker;
-    try {
-      worker = new Worker('public/bg-worker.js');
-      workerSupported = true;
-    } catch (e) {
-      workerSupported = false;
-    }
+    // Import background removal library
+    import * as BackgroundRemoval from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.6.0/+esm";
+    const removeBackground =
+      BackgroundRemoval.default && typeof BackgroundRemoval.default === "function"
+        ? BackgroundRemoval.default
+        : typeof BackgroundRemoval === "function"
+        ? BackgroundRemoval
+        : BackgroundRemoval.imglyRemoveBackground || BackgroundRemoval.removeBackground;
 
-    // Import background removal for fallback
-    let removeBackgroundFallback = null;
-    if (!workerSupported) {
-      import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.6.0/+esm').then(mod => {
-        removeBackgroundFallback = mod.default || mod.removeBackground || mod.imglyRemoveBackground;
-      });
+    if (typeof removeBackground !== "function") {
+      console.error("Background removal module failed to load properly.");
     }
 
     // DOM elements
@@ -532,69 +527,47 @@
       updateProgress();
     };
 
-    // Image processing with worker and fallback
+    // Image processing
     const processImage = async (file) => {
-      showSection("loader");
-      currentProgress = 0;
-      animateProgress(85, 3000);
-
-      if (workerSupported && worker) {
-        // Use web worker
-        worker.postMessage(file);
-        worker.onmessage = async function(e) {
-          if (progressTimer) cancelAnimationFrame(progressTimer);
-          if (e.data.success) {
-            await new Promise(resolve => {
-              animateProgress(100, 500);
-              setTimeout(resolve, 600);
-            });
-            resultImage.src = e.data.dataUrl;
-            downloadBtn.href = e.data.dataUrl;
-            const originalName = file.name.split('.')[0];
-            downloadBtn.download = `${originalName}-no-bg.png`;
-            showSection("result");
-          } else {
-            // Fallback to main thread if worker fails
-            fallbackProcessImage(file, e.data.error);
-          }
-        };
-      } else {
-        // Fallback to main thread
-        fallbackProcessImage(file);
-      }
-    };
-
-    // Fallback main-thread processing
-    async function fallbackProcessImage(file, workerError) {
       try {
-        if (!removeBackgroundFallback) {
-          // Import if not already loaded
-          const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.6.0/+esm');
-          removeBackgroundFallback = mod.default || mod.removeBackground || mod.imglyRemoveBackground;
-        }
-        if (typeof removeBackgroundFallback !== "function") {
+        if (typeof removeBackground !== "function") {
           throw new Error("Background removal function not available.");
         }
-        const blob = await removeBackgroundFallback(file);
-        if (progressTimer) cancelAnimationFrame(progressTimer);
+
+        showSection("loader");
+        currentProgress = 0;
+        
+        // Animate to 85% while processing (slower animation)
+        animateProgress(85, 3000);
+
+        const blob = await removeBackground(file);
+        
+        // Cancel any ongoing animation
+        if (progressTimer) {
+          cancelAnimationFrame(progressTimer);
+        }
+        
+        // Quickly animate from current progress to 100%
         await new Promise(resolve => {
           animateProgress(100, 500);
-          setTimeout(resolve, 600);
+          setTimeout(resolve, 600); // Wait for animation to complete
         });
+
         const url = URL.createObjectURL(blob);
         resultImage.src = url;
         downloadBtn.href = url;
+        
+        // Generate filename based on original
         const originalName = file.name.split('.')[0];
         downloadBtn.download = `${originalName}-no-bg.png`;
+
         showSection("result");
       } catch (err) {
-        if (progressTimer) cancelAnimationFrame(progressTimer);
-        let msg = "Failed to remove background. This may be due to an unsupported image format, browser/device limitation, or memory issue. Please try converting your image to PNG or JPG, use a smaller image, or try a different browser/device.";
-        if (workerError) msg += `\n(Worker error: ${workerError})`;
-        alert(msg);
+        console.error(err);
+        alert("Failed to remove background. This may be due to an unsupported image format or a browser/device limitation. Please try converting your image to PNG or JPG, use a smaller image, or try a different browser/device.");
         showSection("default");
       }
-    }
+    };
 
     // Reset functionality
     const resetApp = () => {
