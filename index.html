@@ -476,19 +476,6 @@
 
     dropzone.addEventListener("drop", (e) => handleFiles(e.dataTransfer.files));
 
-    // Touch events for mobile
-    let touchStartY = 0;
-    dropzone.addEventListener("touchstart", (e) => {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    dropzone.addEventListener("touchend", (e) => {
-      const touchEndY = e.changedTouches[0].clientY;
-      if (Math.abs(touchEndY - touchStartY) < 10) {
-        fileInput.click();
-      }
-    }, { passive: true });
-
     // UI state management
     const showSection = (section) => {
       dropzone.classList.add("hidden");
@@ -577,7 +564,7 @@
         showSection("result");
       } catch (err) {
         console.error(err);
-        alert("Failed to remove background. Please try again with a different image.");
+        alert("Failed to remove background. This may be due to an unsupported image format or a browser issue. Please try converting your image to PNG or JPG, or use a different browser/device.");
         showSection("default");
       }
     };
