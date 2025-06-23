@@ -101,6 +101,7 @@ Visit the live application at: [https://drbaph.is-a.dev/RemoveBG](https://drbaph
 ## 🙏 Acknowledgements
 
 - [Github.com/imgly/background-removal-js](https://github.com/imgly/background-removal-js)
+- [Github.com/microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)
 
 ---
 
